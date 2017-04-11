@@ -1,0 +1,369 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>Intro to RX</title>
+
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/custom.css">
+	<link rel="stylesheet" href="css/theme/white.css">
+
+	<!-- Theme used for syntax highlighting of code -->
+	<link rel="stylesheet" href="lib/css/vs.css">
+
+	<!-- Printing and PDF exports -->
+	<script>
+		var link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+		document.getElementsByTagName('head')[0].appendChild(link);
+	</script>
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+
+			<section>
+				<img class="inline" src="img/rx_logo.png" />
+				<h2>Intro to RX</h2>
+				<br>
+				<p>Nikodem Rafalski</p>
+				<p><small>nikodem@rafalski.co</small></p>
+				<p><small>25-04-2017</small></p>
+			</section>
+
+			<section>
+				<h3>About me</h3>
+				<ul>
+					<li>Software developer with ~9 years experience</li>
+					<li>Mainly .NET, but also node, react, ionic...</li>
+					<li>Event sourcing, functional style</li>
+					<li>CI/CD enthusiast</li>
+				</ul>
+			</section>
+
+			<section>
+				<section>
+					<p>Reactive programming is programming with asynchronous data streams.</p>
+				</section>
+
+				<section>
+					<h3>Pull model - scalars</h3>
+					<pre>
+			<code class="csharp hljs">
+{
+	A a = GetValueA();
+	B b = GetValueB();
+}
+			</code></pre>
+				</section>
+
+
+				<section>
+					<h3>Pull model - collections</h3>
+					<pre>
+							<code class="csharp hljs">
+IEnumerable&lt;int&gt; enumerable = SomeEnumerable();
+IEnumerator&lt;int&gt; enumerator = enumerable.GetEnumerator();
+while(enumerator.MoveNext())
+{
+	var currentValue = enumerator.Current;
+	// do something with value
+}
+							</code>
+						</pre>
+					<div class="fragment fade-in" />
+					<pre>
+							<code class="csharp hljs">
+public static IEnumerable&lt;int&gt; SomeEnumerable(){
+    Thread.Sleep(1000);
+	yield return 31;
+}
+							</code>
+						</pre>
+		</div>
+		</section>
+
+		<section>
+			<h3>Push model - scalars</h3>
+			<pre>
+				<code class="csharp hljs">
+Task.Factory.StartNew(()  => someThing })
+            .ContinueWith (value =>
+				</code>
+			</pre>
+
+			<div class="fragment fade-in" />
+			<pre>
+				<code class="csharp hljs">
+var result = await AsyncComputation()
+				</code>
+			</pre>
+	</div>
+
+	<div class="fragment fade-in" />
+	<pre>
+				<code class="csharp hljs">
+source.DataReceived += (sender, data) => 
+{
+	// processData
+}
+				</code>
+			</pre>
+	</div>
+	</section>
+
+	<section>
+		<h3>Linq - imperative vs declarative</h3>
+		<pre>
+							<code class="csharp hljs">
+var items = new []{&quot;A&quot;, &quot;A&quot;, &quot;B&quot;, &quot;C&quot;};
+var distinct = new List&lt;string&gt;();
+foreach (string item in items)
+{
+    if(distinct.Contains(item))
+    {
+        continue;
+    }
+    distinct.Add(item);
+}
+							</code></pre>
+		<div class="fragment fade-in" />
+		<pre>
+							<code class="csharp hljs">
+var items = new []{"A", "A", "B", "C"};
+var distinct = items.Distinct();
+							</code>
+						</pre>
+		</div>
+	</section>
+
+	<section>
+		<p>What if we could apply all the functional, declarative goodies to events and other async data sources? Filter, combine,
+			inspect...
+		</p>
+	</section>
+
+	</section>
+
+	<section>
+		<section>
+			<h2>The Reactive Extensions for .NET</h2>
+			<small>Install-Package System.Reactive</small>
+		</section>
+
+		<section>
+			<h3>Observer pattern</h3>
+			<pre>
+						<code class="csharp hljs "m>
+interface IObservable&lt;out T&gt;
+{
+	IDisposable Subscribe(IObserver&lt;T&gt; observer);
+}
+
+interface IObserver&lt;in T&gt;
+{
+	void OnNext(T value);
+
+	void OnError(Exception error);
+
+	void OnCompleted();
+}
+				</code>
+					</pre>
+		</section>
+
+		<section>
+			<h3>The Observable contract</h3>
+			<img class="fragment fade-in " src="img/marbles/some_values_completed.png " />
+			<img class="fragment fade-in " src="img/marbles/some_values_error.png " />
+			<img class="fragment fade-in " src="img/marbles/some_values_neverending.png " />
+		</section>
+
+		<section>
+			<h3>Creating sequances - creation operators</h3>
+			<p>Observable class static methods and various ObervableExtensions</p>
+			<div>
+				<div class="leftcol ">
+					<ul>
+						<li>Observable.Never</li>
+						<li>Observable.Empty</li>
+						<li>Observable.Range</li>
+						<li>Observable.Repeat</li>
+						<li>Observable.Never</li>
+					</ul>
+				</div>
+
+				<div class="rightcol ">
+					<ul>
+						<li>Observable.Create</li>
+						<li>Observable.Generate</li>
+						<li>Observable.Timer</li>
+						<li>Observable.Interval</li>
+						<li>Observable.FromEvent</li>
+						<li>Observable.FromAsync</li>
+					</ul>
+				</div>
+			</div>
+			<div style="position:fixed; bottom:0px; text-align: center; ">
+				<p>And many more</p>
+			</div>
+
+		</section>
+
+		<section>
+			<h3>Operators</h3>
+			<div>
+				<ul>
+					<li>Reducing (where, distinct, skip, take...</li>
+					<li>Combine (merge, zip, combineLatest, )</li>
+					<li>Inspecting (all, any, contains, element at...)</li>
+					<li>Aggregations (count, aggregate, scan, group, single...)</li>
+					<li>Transforming (select, select many (flatMap), cast, timestamp...)</li>
+					<li>Time-related (throttle, buffers, sample, timeout)
+						<li>Side effects(do, using, finally...)</li>
+				</ul>
+			</div>
+
+			<p><a href="http://reactivex.io/documentation/operators.html ">Docs</a> and <a href="http://rxmarbles.com ">rx marbles</a>				to the rescue</p>
+
+		</section>
+
+		<section>
+			<h3>Managing concurrency</h3>
+
+			<pre>
+						<code class="csharp hljs ">
+/// &lt;summary&gt;Represents an object that schedules units of work.&lt;/summary&gt;
+interface IScheduler
+{
+    DateTimeOffset Now { get; }
+
+    IDisposable Schedule&lt;TState&gt;(TState state, Func&lt;IScheduler, TState, IDisposable&gt; action);
+
+    IDisposable Schedule&lt;TState&gt;(TState state, TimeSpan dueTime, Func&lt;IScheduler, TState, IDisposable&gt; action);
+
+    IDisposable Schedule&lt;TState&gt;(TState state, DateTimeOffset dueTime, Func&lt;IScheduler, TState, IDisposable&gt; action);
+}
+						</code>
+						</pre>
+		</section>
+
+		<section>
+			<h3>Managing concurrency</h3>
+			<ul>
+				<li>Some operators accept schedulers</li>
+				<li>SubscribeOn affects initial subsription</li>
+				<li><span class="code ">ObserveOn</span> affects subscribers below</li>
+				<li>Scheduler static class</li>
+			</ul>
+			<p>Schedulers:</p>
+			<ul class="leftcol ">
+				<li>CurrentThread</li>
+				<li>Immediate</li>
+				<li>ThreadPool</li>
+				<li>TaskPool</li>
+			</ul>
+			<ul class="rightcol ">
+				<li>EventLoop</li>
+				<li>NewThread</li>
+				<li>DispatcherScheduler</li>
+				<li>and many more platform specific</li>
+			</ul>
+		</section>
+
+		<section>
+			<h3>Composition</h3>
+			<p>Adding bahaviours on top of exisitng streams by just using function composition</p>
+		</section>
+
+		<section>
+			<h3>Managing subscriptions</h3>
+			<p>System reactive brings some helpfull IDIsposable</p>
+			<ul>
+				<li>Disposable.Empty</li>
+				<li>Disposable.Create</li>
+				<li>CopositeDisposable</li>
+				<li>SerialDisposable</li>
+			</ul>
+		</section>
+
+		<section>
+			<h3>Observable temperature</h3>
+			<p><span style="color: red ">Hot observables</span> - produce values regardles of subscriptions; eg. sensor data</p>
+			<p><span style="color: blue ">Cold observables</span> - passive, produce values when subscribed to; each subscriber gets
+				his own stream; eg. enumerate files; ajax request </p>
+		</section>
+
+		<section>
+			<h3>Subjects</h3>
+			<pre><code class="csharp hljs ">
+/// &lt;summary&gt;
+/// Represents an object that is both an observable sequence as well as an observer.
+/// &lt;/summary&gt;
+/// &lt;typeparam name=&quot;T&quot;&gt;The type of the elements processed by the subject.&lt;/typeparam&gt;
+public interface ISubject&lt;T&gt; : ISubject&lt;T, T&gt;, IObserver&lt;T&gt;, IObservable&lt;T&gt;
+{
+}
+						</code></pre>
+		</section>
+
+		<section>
+			<h3>Subjects</h3>
+			<ul>
+				<li>Subject</li>
+				<li>BehaviorSubject</li>
+				<li>ReplaySubject</li>
+				<li>AsyncSubject</li>
+			</ul>
+		</section>
+
+		<section>
+			<h3>Unit testing</h3>
+			<p>Stubing is easy - we already now subjects</p>
+			<p>Test scheduler</p>
+		</section>
+
+	</section>
+
+	<section>
+		<h3>Resources</h3>
+		<ul>
+			<li><a href="ReactiveX ">ReactiveX homepage</a></li>
+			<li><a href="http://www.introtorx.com/ ">http://www.introtorx.com - Free ebook</a></li>
+			<li><a href="https://gist.github.com/staltz/868e7e9bc2a7b8c1f754 ">The introduction to Reactive Programming you've been missing</a></li>
+			<li><a href="https://www.manning.com/books/rx-dot-net-in-action ">RX.NET in action</a></li>
+		</ul>
+	</section>
+
+	<section>
+		<h2>Thank you</h2>
+	</section>
+	</div>
+	</div>
+
+	<script src="lib/js/head.min.js "></script>
+	<script src="js/reveal.js "></script>
+
+	<script>
+		// More info https://github.com/hakimel/reveal.js#configuration
+		Reveal.initialize({
+			history: true,
+
+			// More info https://github.com/hakimel/reveal.js#dependencies
+			dependencies: [
+				{ src: 'plugin/markdown/marked.js' },
+				{ src: 'plugin/markdown/markdown.js' },
+				{ src: 'plugin/notes/notes.js', async: true },
+				{ src: 'plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } }
+			]
+		});
+	</script>
+</body>
+
+</html>

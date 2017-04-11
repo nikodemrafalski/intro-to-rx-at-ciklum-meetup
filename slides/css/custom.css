@@ -1,0 +1,27 @@
+img.inline {
+    height: 3em;
+    width: 3em;
+    vertical-align: middle;
+    border: none !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+}
+
+div.leftcol {
+    text-align: left;
+    float: left;
+}
+
+div.rightcol {
+    text-align: right;
+    float: right;
+}
+
+.csharp {
+    font-size: 100% !important;
+    line-height: 100% !important;
+}
+
+li {
+    font-size: 80%;
+}

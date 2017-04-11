@@ -1,0 +1,31 @@
+﻿<Window x:Class="WpfClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfClient"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*"></ColumnDefinition>
+            <ColumnDefinition Width="8*"></ColumnDefinition>
+            <ColumnDefinition Width="8*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0">
+            <Button  Content="Events" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Command="{Binding ConnectA}" FontSize="18" FontWeight="Bold"/>
+            <Button  Content="Rx" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Command="{Binding ConnectB}" FontSize="18" FontWeight="Bold"/>
+            <Button  Content="Freeze" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Command="{Binding Slow1}" FontSize="18" FontWeight="Bold"/>
+            <Button  Content="Threads" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Command="{Binding SlowThr}" FontSize="18" FontWeight="Bold"/>
+            <Button  Content="Rx Sched" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Command="{Binding SlowRx}" FontSize="18" FontWeight="Bold"/>
+            <Button  Content="Unsub" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Command="{Binding Unsubscribe}" FontSize="18" FontWeight="Bold"/>
+        </StackPanel>
+        <DockPanel Grid.Column="1" LastChildFill="True">
+            <TextBlock DockPanel.Dock="Top" FontWeight="Bold" Text="{Binding CurrentLink}" FontSize="18"></TextBlock>
+            <TextBlock DockPanel.Dock="Bottom" FontWeight="Bold" Text="{Binding Prime}"></TextBlock>
+            <TextBlock DockPanel.Dock="Bottom" FontWeight="Bold" Text="{Binding Property}"></TextBlock>
+            <TextBox Text="{Binding CurrentHtml}" Margin="0,0,0,-0.333" Width="403"></TextBox>
+        </DockPanel>
+        <ListBox Grid.Column="2" ItemsSource="{Binding Images}"></ListBox>
+    </Grid>
+</Window>
